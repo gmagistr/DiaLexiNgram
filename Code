@@ -1,0 +1,71 @@
+import requests
+import urllib
+import pandas as pd
+import time
+
+
+dictionary_lang = {'Ru': 36, 'Eng': 26, 'He': 35, 'Zh': 34, 'It': 33, 'Sp': 32, 'De': 31, 'Fr': 30, 'BrE': 29, 'AmE': 28, 'EngFiction': 27}
+months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+
+language = 'De'
+corpus = dictionary_lang[language]
+starting_year = 1500
+ending_year = 2022
+smoothing = 5
+sortal = []
+individual = []
+relational = []
+functional = []
+
+
+list_s = ['Buch', 'Berg', 'Gebäude', 'Monument', 'Schwert', 'Stein', 'Stern', 'Vogel', 'Tisch', 'Stier']
+list_i = ['Evangelium', 'Himmel', 'Kolosseum', 'Mittelmeer', 'Nordpol', 'Olymp', 'Rhein', 'Sonnensystem', 'Vatikan', 'Mond' ]
+list_r = ['Auge', 'Bein', 'Onkel', 'Zahn', 'Fuß', 'Bruder', 'Nachbar', 'Kollegen', 'Freund', 'Minister']
+list_f = ['Vater', 'König', 'Sprecher', 'Erfinder', 'Chef', 'Kopf', 'Mund', 'Papst', 'Magen', 'Bauch']
+lista_list = [list_s, list_i, list_r, list_f]
+
+
+def runQuery():
+
+  for lista in lista_list:
+    print(lista)
+    time.sleep(50)
+    for query in lista:
+
+     query = f'von dem {query}/(von dem {query}+vom {query})'
+     query = urllib.parse.quote(query)
+
+ 
+     url = f'https://books.google.com/ngrams/json?content={query}&starting_year={starting_year}&ending_year={ending_year}&corpus={corpus}&smoothing={smoothing}'
+
+
+     response = requests.get(url)
+    
+     output = response.json()
+     print(output)
+
+     if lista == list_s:
+      sortal.append(output)
+     elif lista == list_i:
+      individual.append(output)
+     elif lista == list_r:
+      relational.append(output)
+     else:
+      functional.append(output)
+  return sortal, individual, relational, functional
+
+
+
+
+
+
+
+
+
+# Esecuzione della query
+return_data = runQuery()
+print(sortal)
+print(individual)
+print(relational)
+print(functional)
